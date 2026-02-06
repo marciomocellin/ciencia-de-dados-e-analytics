@@ -8,6 +8,7 @@
 ## Objetivo principal
 - Ajudar a criar um MVP (produto viavel minimo) para a conclusao do curso, reutilizando e adaptando materiais existentes.
 - Priorizar clareza, reprodutibilidade e uma narrativa curta do problema ate o resultado.
+- Antes de gerar arquivos ou codigo, alinhar e registrar o tema e o dataset escolhidos.
 
 ## Escopo esperado do MVP
 - Um problema claro, uma base de dados definida e um pipeline simples, completo e executavel.
@@ -72,5 +73,6 @@
 
 ## Saidas esperadas do Copilot
 - Plano curto do MVP antes de gerar codigo.
+- Confirmacao do tema e do dataset antes de criar arquivos iniciais.
 - Sugestao de notebooks/arquivos do repositorio que podem ser reaproveitados.
 - Scripts e cadernos alinhados com a estrutura padrao do MVP.
