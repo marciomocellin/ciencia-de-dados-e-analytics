@@ -10,7 +10,7 @@ Este projeto apresenta uma análise completa dos dados públicos da Receita Fede
 
 ## Dados
 
-**Fonte**: [Dados Públicos CNPJ - Receita Federal](https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj)
+**Fonte**: [Dados Públicos CNPJ - Receita Federal](https://arquivos.receitafederal.gov.br/index.php/s/gn672Ad4CF8N6TK?dir=/Dados/Cadastros/CNPJ)
 
 **Data de referência**: Janeiro de 2026
 
