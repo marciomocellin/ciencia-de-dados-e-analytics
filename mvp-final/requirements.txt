@@ -1,19 +1,19 @@
 # Dependências do MVP - Análise de Dados da Receita Federal (CNPJ)
 
 # Manipulação de dados
-pandas>=1.5.0
-numpy>=1.23.0
+pandas>=3.0.0
+# numpy>=1.23.0
 pyarrow>=10.0.0  # Para salvar/carregar arquivos parquet
 
 # Visualização
 matplotlib>=3.6.0
-seaborn>=0.12.0
-plotly>=5.11.0
+# seaborn>=0.12.0
+# plotly>=5.11.0
 
 # Machine Learning
 scikit-learn>=1.2.0
 xgboost>=1.7.0
-joblib>=1.2.0
+# joblib>=1.2.0
 
 # Network Analysis
 networkx>=2.8.0
