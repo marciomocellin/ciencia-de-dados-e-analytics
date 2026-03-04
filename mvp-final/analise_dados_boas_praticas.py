@@ -1,19 +1,19 @@
 """
-MVP Final - Análise de Dados da Receita Federal (CNPJ)
-
-Autor: MVP - Pós-Graduação em Ciência de Dados e Analytics - PUC-Rio  
-Data: Janeiro/2026  
-Dataset: Dados Públicos CNPJ - Receita Federal
+MVP: Análise de Dados e Boas Práticas
+Assunto: Análise de Dados da Receita Federal (CNPJ)
+Pós-Graduação em Ciência de Dados e Analytics - PUC-Rio  
+Autor: Marcio Goulart Mocellin
+Data: Abril/2026  
+Dataset: Dados Públicos CNPJ - Receita Federal - https://arquivos.receitafederal.gov.br/index.php/s/gn672Ad4CF8N6TK?dir=/Dados/Cadastros/CNPJ/2026-01
+Dataset referente ao mês de Janeiro/2026
 
 Objetivo:
 Este script apresenta uma análise completa dos dados públicos da Receita Federal sobre empresas brasileiras, incluindo:
 1. Análise Exploratória e Visualização: Compreender o perfil das empresas brasileiras
-2. Previsão de Encerramento: Modelo de ML para identificar empresas em risco
-3. Rede de Relacionamentos: Análise de grafos para mapear conexões entre sócios
 """
 
 # ==============================================================================
-# %% 1. SETUP E IMPORTAÇÃO DE BIBLIOTECAS
+# %#% 1. SETUP E IMPORTAÇÃO DE BIBLIOTECAS
 # ==============================================================================
 
 # Manipulação de dados
@@ -22,8 +22,8 @@ import numpy as np
 import zipfile
 import os
 from pathlib import Path
-import warnings
-warnings.filterwarnings('ignore')
+# import warnings
+# warnings.filterwarnings('ignore')
 
 # Visualização
 import matplotlib.pyplot as plt
@@ -51,14 +51,14 @@ sns.set_palette("husl")
 print("✅ Bibliotecas importadas com sucesso!")
 
 # ==============================================================================
-# %% Definir caminhos
+# %#% Definir caminhos
 # ==============================================================================
 
-BASE_DIR = Path('.').absolute().parent
-DATA_RAW = BASE_DIR / 'data' / 'raw' / '2026-01'
-DATA_PROCESSED = BASE_DIR / 'data' / 'processed'
-FIGURES_DIR = BASE_DIR / 'figures'
-MODELS_DIR = BASE_DIR / 'models'
+BASE_DIR = Path('.').absolute()#.parent
+DATA_RAW = BASE_DIR / 'mvp-final' / 'data' / 'raw' / '2026-01'
+DATA_PROCESSED = BASE_DIR / 'mvp-final' / 'data' / 'processed'
+FIGURES_DIR = BASE_DIR / 'mvp-final' / 'figures'
+MODELS_DIR = BASE_DIR / 'mvp-final' / 'models'
 
 # Criar diretórios se não existirem
 DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -124,7 +124,8 @@ def load_csv_file(file_path, columns, encoding='latin1', sep=';', nrows=None):
             names=columns,
             header=None,
             low_memory=False,
-            nrows=nrows
+            nrows=nrows,
+            dtype=str
         )
         return df
     except Exception as e:
@@ -158,11 +159,11 @@ extracted_dir = DATA_PROCESSED / 'extracted'
 extracted_dir.mkdir(exist_ok=True)
 
 # Extrair apenas se a pasta estiver vazia
-if not list(extracted_dir.glob('*.csv')):
+if not list(extracted_dir.glob('*CSV')):
     print("Extraindo arquivos ZIP...")
     zip_files = list(DATA_RAW.glob('*.zip'))
     
-    for zip_file in zip_files[:5]:  # Extrair apenas os primeiros arquivos para teste
+    for zip_file in zip_files:  # Extrair apenas os primeiros arquivos para teste
         extract_zip_file(zip_file, extracted_dir)
 else:
     print("✅ Arquivos já extraídos")
@@ -174,20 +175,24 @@ else:
 # CONFIGURAÇÃO: Ajuste nrows para None para carregar todos os dados
 SAMPLE_SIZE = 100000  # Usar amostra para desenvolvimento rápido
 
-print("="*60)
-print("CARREGANDO EMPRESAS")
-print("="*60)
-df_empresas = load_multiple_files('*.EMPRECSV', empresas_cols, extracted_dir, nrows=SAMPLE_SIZE)
+# print("="*60)
+# print("CARREGANDO EMPRESAS")
+# print("="*60)
+# df_empresas = load_multiple_files('*.EMPRECSV', empresas_cols, extracted_dir, nrows=SAMPLE_SIZE)
 
 print("\n" + "="*60)
 print("CARREGANDO ESTABELECIMENTOS")
 print("="*60)
-df_estabelecimentos = load_multiple_files('*.ESTABELE', estabelecimentos_cols, extracted_dir, nrows=SAMPLE_SIZE)
-
-print("\n" + "="*60)
-print("CARREGANDO SÓCIOS")
-print("="*60)
-df_socios = load_multiple_files('*.SOCIOCSV', socios_cols, extracted_dir, nrows=SAMPLE_SIZE)
+df_estabelecimentos = load_multiple_files('*.ESTABELE', estabelecimentos_cols, extracted_dir, nrows=SAMPLE_SIZE).loc[:, ['cnpj_basico', 'cnpj_ordem', 'cnpj_dv', 'identificador_matriz_filial',
+       'nome_fantasia', 'situacao_cadastral', 'data_situacao_cadastral',
+       # 'motivo_situacao_cadastral', 'nome_cidade_exterior', #'pais',
+       'data_inicio_atividade', 'cnae_fiscal_principal',
+       #'cnae_fiscal_secundaria'
+       ]]
+# print("\n" + "="*60)
+# print("CARREGANDO SÓCIOS")
+# print("="*60)
+# df_socios = load_multiple_files('*.SOCIOCSV', socios_cols, extracted_dir, nrows=SAMPLE_SIZE)
 
 # ==============================================================================
 # Carregamento das Tabelas Auxiliares
@@ -200,57 +205,57 @@ if cnae_files:
     print(f"✅ CNAEs carregados: {len(df_cnaes):,}")
 
 # Municípios
-muni_files = list(extracted_dir.glob('*.MUNICCSV'))
-if muni_files:
-    df_municipios = load_csv_file(muni_files[0], ['codigo', 'descricao'])
-    print(f"✅ Municípios carregados: {len(df_municipios):,}")
+# muni_files = list(extracted_dir.glob('*.MUNICCSV'))
+# if muni_files:
+#     df_municipios = load_csv_file(muni_files[0], ['codigo', 'descricao'])
+#     print(f"✅ Municípios carregados: {len(df_municipios):,}")
 
 # Naturezas Jurídicas
-nat_files = list(extracted_dir.glob('*.NATJUCSV'))
-if nat_files:
-    df_naturezas = load_csv_file(nat_files[0], ['codigo', 'descricao'])
-    print(f"✅ Naturezas Jurídicas carregadas: {len(df_naturezas):,}")
+# nat_files = list(extracted_dir.glob('*.NATJUCSV'))
+# if nat_files:
+#     df_naturezas = load_csv_file(nat_files[0], ['codigo', 'descricao'])
+#     print(f"✅ Naturezas Jurídicas carregadas: {len(df_naturezas):,}")
 
 # Qualificações
-qual_files = list(extracted_dir.glob('*.QUALSCSV'))
-if qual_files:
-    df_qualificacoes = load_csv_file(qual_files[0], ['codigo', 'descricao'])
-    print(f"✅ Qualificações carregadas: {len(df_qualificacoes):,}")
+# qual_files = list(extracted_dir.glob('*.QUALSCSV'))
+# if qual_files:
+#     df_qualificacoes = load_csv_file(qual_files[0], ['codigo', 'descricao'])
+#     print(f"✅ Qualificações carregadas: {len(df_qualificacoes):,}")
 
 # ==============================================================================
 # Visão Geral dos Dados
 # ==============================================================================
 
 print("📊 RESUMO DOS DADOS CARREGADOS\n")
-print(f"Empresas: {len(df_empresas):,} registros")
+# print(f"Empresas: {len(df_empresas):,} registros")
 print(f"Estabelecimentos: {len(df_estabelecimentos):,} registros")
-print(f"Sócios: {len(df_socios):,} registros")
+# print(f"Sócios: {len(df_socios):,} registros")
 print(f"\nCNAEs: {len(df_cnaes):,}")
-print(f"Municípios: {len(df_municipios):,}")
-print(f"Naturezas Jurídicas: {len(df_naturezas):,}")
-print(f"Qualificações: {len(df_qualificacoes):,}")
+# print(f"Municípios: {len(df_municipios):,}")
+# print(f"Naturezas Jurídicas: {len(df_naturezas):,}")
+# print(f"Qualificações: {len(df_qualificacoes):,}")
 
 # Primeiras linhas de Empresas
-print("\n📋 AMOSTRA DE EMPRESAS:")
-print(df_empresas.head())
+# print("\n📋 AMOSTRA DE EMPRESAS:")
+# print(df_empresas.head())
 
 print("\n📋 AMOSTRA DE ESTABELECIMENTOS:")
 print(df_estabelecimentos.head())
 
-print("\n📋 AMOSTRA DE SÓCIOS:")
-print(df_socios.head())
+# print("\n📋 AMOSTRA DE SÓCIOS:")
+# print(df_socios.head())
 
 # ==============================================================================
 # 3. ANÁLISE EXPLORATÓRIA E VISUALIZAÇÃO
 # ==============================================================================
 
 # Merge dos Dados Principais
-df_main = df_estabelecimentos.merge(
-    df_empresas,
-    on='cnpj_basico',
-    how='left',
-    suffixes=('', '_empresa')
-)
+df_main = df_estabelecimentos#.merge(
+#     df_empresas,
+#     on='cnpj_basico',
+#     how='left',
+#     suffixes=('', '_empresa')
+# )
 
 print(f"✅ Dataset principal: {len(df_main):,} registros")
 print(f"Colunas: {df_main.shape[1]}")
@@ -277,30 +282,30 @@ if 'df_cnaes' in globals():
         how='left'
     )
 
-if 'df_municipios' in globals():
-    df_main = df_main.merge(
-        df_municipios.rename(columns={'codigo': 'municipio', 'descricao': 'municipio_nome'}),
-        on='municipio',
-        how='left'
-    )
-
-if 'df_naturezas' in globals():
-    df_main = df_main.merge(
-        df_naturezas.rename(columns={'codigo': 'natureza_juridica', 'descricao': 'natureza_descricao'}),
-        on='natureza_juridica',
-        how='left'
-    )
+# if 'df_municipios' in globals():
+#     df_main = df_main.merge(
+#         df_municipios.rename(columns={'codigo': 'municipio', 'descricao': 'municipio_nome'}),
+#         on='municipio',
+#         how='left'
+#     )
+# 
+# if 'df_naturezas' in globals():
+#     df_main = df_main.merge(
+#         df_naturezas.rename(columns={'codigo': 'natureza_juridica', 'descricao': 'natureza_descricao'}),
+#         on='natureza_juridica',
+#         how='left'
+#     )
 
 # Mapear porte da empresa
-porte_map = {
-    '00': 'Não Informado',
-    '01': 'Micro Empresa',
-    '03': 'Empresa de Pequeno Porte',
-    '05': 'Demais'
-}
-df_main['porte_descricao'] = df_main['porte_empresa'].astype(str).map(porte_map)
+# porte_map = {
+#     '00': 'Não Informado',
+#     '01': 'Micro Empresa',
+#     '03': 'Empresa de Pequeno Porte',
+#     '05': 'Demais'
+# }
+# df_main['porte_descricao'] = df_main['porte_empresa'].astype(str).map(porte_map)
 
-# Mapear situação cadastral
+# Mapear situação cadastral https://www.gov.br/receitafederal/dados/cnpj-metadados.pdf
 situacao_map = {
     '01': 'Nula',
     '02': 'Ativa',
@@ -310,8 +315,8 @@ situacao_map = {
 }
 df_main['situacao_descricao'] = df_main['situacao_cadastral'].astype(str).map(situacao_map)
 
-# Calcular idade da empresa (em anos)
-df_main['idade_empresa'] = (pd.Timestamp.now() - df_main['data_inicio_atividade']).dt.days / 365.25
+# Calcular idade da empresa (em anos)pd.Timestamp.now()
+df_main['idade_empresa'] = (pd.to_datetime('20260110', format='%Y%m%d', errors='coerce') - df_main['data_inicio_atividade']).dt.days / 365.25
 
 print("✅ Dados limpos e transformados")
 print(df_main.info())
@@ -323,8 +328,8 @@ print(df_main.info())
 print("\n📊 ESTATÍSTICAS GERAIS\n")
 print(f"Total de empresas: {df_main['cnpj_basico'].nunique():,}")
 print(f"Total de estabelecimentos: {len(df_main):,}")
-print(f"Total de UFs: {df_main['uf'].nunique()}")
-print(f"Total de Municípios: {df_main['municipio'].nunique():,}")
+# print(f"Total de UFs: {df_main['uf'].nunique()}")
+# print(f"Total de Municípios: {df_main['municipio'].nunique():,}")
 print(f"Total de CNAEs: {df_main['cnae_fiscal_principal'].nunique():,}")
 
 print("\n📊 DISTRIBUIÇÃO POR SITUAÇÃO CADASTRAL:")
@@ -913,4 +918,4 @@ print("\n" + "="*60)
 print("✅ ANÁLISE CONCLUÍDA COM SUCESSO!")
 print("="*60)
 
-# %%
+# %#%
