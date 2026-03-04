@@ -12,8 +12,18 @@
 
 ## Escopo esperado do MVP
 - Um problema claro, uma base de dados definida e um pipeline simples, completo e executavel.
+- O MPV tem 3 scripts Python principais, um para cada uma das sprints
+  - Sprint 1: Análise de Dados e Boas Práticas
+    - exemplo: mvp-analise-de-dados-e-boas-praticas/MVP_CD_Diabetes.ipynb
+    - Arquivo MVP: mvp-final/analise_dados_boas_praticas.py
+  - Sprint 2: Engenharia de Dados
+    - exemplo: mvp-engenharia-de-dados/
+    - Arquivo MVP: mvp-final/engenharia_de_dados.py
+  - Sprint 3: Machine Learning e Analytics
+    - exemplo: mvp-machine-learning-e-analytics/
+    - Arquivo MVP: mvp-final/machine_learning_e_analytics.py
 - Entregaveis minimos:
-  - 1 script Python principal do MVP com células `# %%`, contendo introducao, dados, modelagem, avaliacao e conclusao.
+  - 3 script Python principal do MVP com células `# %%`, contendo introducao, dados, desemvolvimento, avaliação e conclusão.
   - 1 README explicando objetivo, como rodar e fontes de dados.
   - Artefatos gerados (modelos, figuras, tabelas) salvos em pastas organizadas.
 
