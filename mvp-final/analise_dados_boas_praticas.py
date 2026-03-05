@@ -173,12 +173,12 @@ else:
 # ==============================================================================
 
 # CONFIGURAÇÃO: Ajuste nrows para None para carregar todos os dados
-SAMPLE_SIZE = 100000  # Usar amostra para desenvolvimento rápido
+SAMPLE_SIZE = None # 100000  # Usar amostra para desenvolvimento rápido
 
-# print("="*60)
-# print("CARREGANDO EMPRESAS")
-# print("="*60)
-# df_empresas = load_multiple_files('*.EMPRECSV', empresas_cols, extracted_dir, nrows=SAMPLE_SIZE)
+print("="*60)
+print("CARREGANDO EMPRESAS")
+print("="*60)
+df_empresas = load_multiple_files('*.EMPRECSV', empresas_cols, extracted_dir, nrows=SAMPLE_SIZE)
 
 print("\n" + "="*60)
 print("CARREGANDO ESTABELECIMENTOS")
@@ -189,10 +189,10 @@ df_estabelecimentos = load_multiple_files('*.ESTABELE', estabelecimentos_cols, e
        'data_inicio_atividade', 'cnae_fiscal_principal',
        #'cnae_fiscal_secundaria'
        ]]
-# print("\n" + "="*60)
-# print("CARREGANDO SÓCIOS")
-# print("="*60)
-# df_socios = load_multiple_files('*.SOCIOCSV', socios_cols, extracted_dir, nrows=SAMPLE_SIZE)
+print("\n" + "="*60)
+print("CARREGANDO SÓCIOS")
+print("="*60)
+df_socios = load_multiple_files('*.SOCIOCSV', socios_cols, extracted_dir, nrows=SAMPLE_SIZE)
 
 # ==============================================================================
 # Carregamento das Tabelas Auxiliares
@@ -205,22 +205,22 @@ if cnae_files:
     print(f"✅ CNAEs carregados: {len(df_cnaes):,}")
 
 # Municípios
-# muni_files = list(extracted_dir.glob('*.MUNICCSV'))
-# if muni_files:
-#     df_municipios = load_csv_file(muni_files[0], ['codigo', 'descricao'])
-#     print(f"✅ Municípios carregados: {len(df_municipios):,}")
+muni_files = list(extracted_dir.glob('*.MUNICCSV'))
+if muni_files:
+    df_municipios = load_csv_file(muni_files[0], ['codigo', 'descricao'])
+    print(f"✅ Municípios carregados: {len(df_municipios):,}")
 
 # Naturezas Jurídicas
-# nat_files = list(extracted_dir.glob('*.NATJUCSV'))
-# if nat_files:
-#     df_naturezas = load_csv_file(nat_files[0], ['codigo', 'descricao'])
-#     print(f"✅ Naturezas Jurídicas carregadas: {len(df_naturezas):,}")
+nat_files = list(extracted_dir.glob('*.NATJUCSV'))
+if nat_files:
+    df_naturezas = load_csv_file(nat_files[0], ['codigo', 'descricao'])
+    print(f"✅ Naturezas Jurídicas carregadas: {len(df_naturezas):,}")
 
 # Qualificações
-# qual_files = list(extracted_dir.glob('*.QUALSCSV'))
-# if qual_files:
-#     df_qualificacoes = load_csv_file(qual_files[0], ['codigo', 'descricao'])
-#     print(f"✅ Qualificações carregadas: {len(df_qualificacoes):,}")
+qual_files = list(extracted_dir.glob('*.QUALSCSV'))
+if qual_files:
+    df_qualificacoes = load_csv_file(qual_files[0], ['codigo', 'descricao'])
+    print(f"✅ Qualificações carregadas: {len(df_qualificacoes):,}")
 
 # ==============================================================================
 # Visão Geral dos Dados
